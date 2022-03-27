@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
+import {
+  AppBar,
+  Box,
+  Toolbar,
+  Button,
+  Typography,
+  Menu,
+  MenuItem,
+} from "@mui/material/";
+
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 
@@ -12,6 +17,15 @@ import { useLocation } from "react-router-dom";
 export default function ButtonAppBar() {
   const { pathname } = useLocation();
   const [showHeader, setShowHeader] = useState(true);
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   useEffect(() => {
     if (pathname === "/") {
@@ -38,8 +52,36 @@ export default function ButtonAppBar() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            User Preference App
+            User Preferences App
           </Typography>
+          <Button
+            id="demo-positioned-button"
+            aria-controls={open ? "demo-positioned-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
+            onClick={handleClick}
+            color="inherit"
+          >
+            Theme
+          </Button>
+          <Menu
+            id="demo-positioned-menu"
+            aria-labelledby="demo-positioned-button"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+          >
+            <MenuItem onClick={handleClose}>Primary</MenuItem>
+            <MenuItem onClick={handleClose}>Dark</MenuItem>
+          </Menu>
           <Button color="inherit">Logout</Button>
         </Toolbar>
       </AppBar>
