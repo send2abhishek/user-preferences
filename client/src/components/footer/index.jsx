@@ -6,15 +6,12 @@ const Copyright = (props) => {
     <Grid container>
       <Typography
         variant="body2"
-        color="text.secondary"
         align="center"
         {...props}
-        sx={{ position: "fixed", bottom: "0", width: "100%" }}
+        sx={{ position: "fixed", bottom: "0", width: "100%", color: "black" }}
       >
-        {"Copyright © "}
-        <Link color="inherit" href="https://mui.com/">
-          User Preferences App
-        </Link>{" "}
+        {"Copyright ©  User Preferences App "}
+
         {new Date().getFullYear()}
         {"."}
       </Typography>
