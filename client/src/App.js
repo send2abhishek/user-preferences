@@ -1,11 +1,17 @@
 import { Routes, Route } from "react-router-dom";
+import { useDispatch } from "react-redux";
+
 import Login from "components/login/";
 import Register from "components/register/";
 import Home from "components/home/";
 import Layout from "containers/layout/";
 import PrivateRoute from "routes/privateRoutes/";
+import { autoLogin } from "reduxSlices/themeSlice";
 
 function App() {
+  const dispatch = useDispatch();
+  dispatch(autoLogin());
+
   return (
     <Layout>
       <Routes>

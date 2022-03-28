@@ -11,22 +11,50 @@ import {
 } from "@mui/material/";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+
+import Backdrop from "components/ui/BackDrop";
+import { loginRequest } from "reduxSlices/themeSlice";
 
 const theme = createTheme();
 
 export default function SignIn() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [formData, setFormData] = React.useState({
+    email: "",
+    password: "",
+  });
+
+  const dataFetchingStatus = useSelector(
+    (state) => state.theme.dataFetchingStatus
+  );
+
+  const errorMessage = useSelector((state) => state.theme.errorMessage);
+  const isLoggedIn = useSelector((state) => state.theme.isLoggedIn);
+
+  React.useEffect(() => {
+    if (isLoggedIn) {
+      console.log("login success");
+      navigate("/home");
+    }
+  }, [isLoggedIn, navigate]);
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    dispatch(loginRequest(formData));
+  };
+
+  const handleChange = (e) => {
+    const copyOfFormData = { ...formData };
+    copyOfFormData[e.target.name] = e.target.value;
+    setFormData(copyOfFormData);
   };
 
   return (
     <ThemeProvider theme={theme}>
+      <Backdrop open={dataFetchingStatus} />
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -56,8 +84,10 @@ export default function SignIn() {
               id="email"
               label="Email Address"
               name="email"
+              value={formData.email}
               autoComplete="email"
               autoFocus
+              onChange={handleChange}
             />
             <TextField
               margin="normal"
@@ -67,6 +97,8 @@ export default function SignIn() {
               label="Password"
               type="password"
               id="password"
+              onChange={handleChange}
+              value={formData.password}
               autoComplete="current-password"
             />
             <Button
@@ -74,6 +106,9 @@ export default function SignIn() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              disabled={
+                !(formData.email.length > 0 && formData.password.length > 0)
+              }
             >
               Sign In
             </Button>
@@ -82,6 +117,12 @@ export default function SignIn() {
                 <Link to="/register">{"Don't have an account? Sign Up"}</Link>
               </Grid>
             </Grid>
+
+            {errorMessage && (
+              <Typography component="div" color="red">
+                {errorMessage}
+              </Typography>
+            )}
           </Box>
         </Box>
         {/* <Copyright sx={{ mt: 8, mb: 4 }} /> */}

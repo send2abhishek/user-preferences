@@ -11,21 +11,20 @@ import {
 
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-
-import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
-import { updateSelectedTheme } from "reduxSlices/themeSlice";
+import { updateSelectedTheme, logoutRequest } from "reduxSlices/themeSlice";
 
 export default function ButtonAppBar() {
-  const { pathname } = useLocation();
-  const [showHeader, setShowHeader] = useState(true);
+  const navigate = useNavigate();
+  const [showHeader, setShowHeader] = useState(false);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
-
   const dispatch = useDispatch();
   const themeList = useSelector((state) => state.theme.themeList);
+  const isLoggedIn = useSelector((state) => state.theme.isLoggedIn);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -41,11 +40,18 @@ export default function ButtonAppBar() {
     setAnchorEl(null);
   };
 
+  const handleLogout = () => {
+    console.log("logout called");
+    dispatch(logoutRequest());
+    setShowHeader(false);
+    navigate("/");
+  };
+
   useEffect(() => {
-    if (pathname === "/") {
-      setShowHeader(false);
+    if (isLoggedIn) {
+      setShowHeader(true);
     }
-  }, [pathname]);
+  }, [isLoggedIn]);
 
   return (
     <Box
@@ -99,7 +105,9 @@ export default function ButtonAppBar() {
               </MenuItem>
             ))}
           </Menu>
-          <Button color="inherit">Logout</Button>
+          <Button color="inherit" onClick={handleLogout}>
+            Logout
+          </Button>
         </Toolbar>
       </AppBar>
     </Box>
