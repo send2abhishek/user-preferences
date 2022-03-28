@@ -22,7 +22,7 @@ const Layout = (props) => {
     <Aux>
       <main>
         <ThemeProvider theme={theme}>
-          <Paper>
+          <Paper style={{ height: "90vh" }}>
             <Header />
             <div>{props.children}</div>
             <Footer />

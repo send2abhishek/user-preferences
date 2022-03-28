@@ -3,6 +3,7 @@ import Login from "components/login/";
 import Register from "components/register/";
 import Home from "components/home/";
 import Layout from "containers/layout/";
+import PrivateRoute from "routes/privateRoutes/";
 
 function App() {
   return (
@@ -10,8 +11,15 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route
+          path="/home"
+          element={
+            <PrivateRoute>
+              <Home />
+            </PrivateRoute>
+          }
+        />
 
-        <Route path="/home" element={<Home />} />
         <Route
           path="*"
           element={
