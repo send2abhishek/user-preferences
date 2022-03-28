@@ -1,5 +1,5 @@
 import React from "react";
-import { Typography, Link, Grid } from "@mui/material/";
+import { Typography, Grid } from "@mui/material/";
 
 const Copyright = (props) => {
   return (

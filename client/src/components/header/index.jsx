@@ -13,6 +13,9 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 
 import { useLocation } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+
+import { updateSelectedTheme } from "reduxSlices/themeSlice";
 
 export default function ButtonAppBar() {
   const { pathname } = useLocation();
@@ -20,10 +23,23 @@ export default function ButtonAppBar() {
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+
+  const dispatch = useDispatch();
+  const themeList = useSelector((state) => state.theme.themeList);
+
+  console.log("themeList", themeList);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleThemeChange = (themeId) => {
+    dispatch(
+      updateSelectedTheme(themeList.find((item) => item.id === themeId))
+    );
     setAnchorEl(null);
   };
 
@@ -79,8 +95,11 @@ export default function ButtonAppBar() {
               horizontal: "right",
             }}
           >
-            <MenuItem onClick={handleClose}>Primary</MenuItem>
-            <MenuItem onClick={handleClose}>Dark</MenuItem>
+            {themeList.map((item, index) => (
+              <MenuItem key={index} onClick={() => handleThemeChange(item.id)}>
+                {item.themeName}
+              </MenuItem>
+            ))}
           </Menu>
           <Button color="inherit">Logout</Button>
         </Toolbar>
