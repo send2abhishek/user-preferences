@@ -1,0 +1,3 @@
+[submodule "server/user-preferences"]
+	path = server/user-preferences
+	url = https://github.com/send2abhishek/user-preferences

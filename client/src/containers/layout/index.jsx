@@ -37,7 +37,7 @@ const Layout = (props) => {
       <main>
         <Backdrop open={dataFetchingStatus} />
         <ThemeProvider theme={theme}>
-          <Paper style={{ height: "90vh" }}>
+          <Paper style={{ height: "96vh" }}>
             <Header />
             <div>{props.children}</div>
             <Footer />
