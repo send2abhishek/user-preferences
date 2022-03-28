@@ -27,8 +27,6 @@ export default function ButtonAppBar() {
   const dispatch = useDispatch();
   const themeList = useSelector((state) => state.theme.themeList);
 
-  console.log("themeList", themeList);
-
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
