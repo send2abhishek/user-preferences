@@ -34,14 +34,17 @@ export default function ButtonAppBar() {
   };
 
   const handleThemeChange = (themeId) => {
-    dispatch(
-      updateSelectedTheme(themeList.find((item) => item.id === themeId))
-    );
+    const theme = themeList.find((item) => item.id === themeId);
+    const payload = {
+      preferenceName: "theme",
+      preferenceValue: theme.themeName,
+      userId: sessionStorage.getItem("userId"),
+    };
+    dispatch(updateSelectedTheme(payload));
     setAnchorEl(null);
   };
 
   const handleLogout = () => {
-    console.log("logout called");
     dispatch(logoutRequest());
     setShowHeader(false);
     navigate("/");

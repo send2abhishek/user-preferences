@@ -12,6 +12,7 @@ export const theme = createSlice({
     dataFetchingStatus: false,
     errorMessage: undefined,
     isLoggedIn: false,
+    isRegister: false,
   },
   reducers: {
     setTheme: (state, action) => {
@@ -29,6 +30,9 @@ export const theme = createSlice({
     setIsLoggedIn: (state, action) => {
       state.isLoggedIn = action.payload;
     },
+    setIsRegister: (state, action) => {
+      state.isRegister = action.payload;
+    },
   },
 });
 
@@ -38,10 +42,28 @@ export const {
   setDatFetchingStatus,
   setErrorMessage,
   setIsLoggedIn,
+  setIsRegister,
 } = theme.actions;
 
-export const updateSelectedTheme = (themeData) => (dispatch) => {
-  dispatch(setTheme(themeData));
+export const updateSelectedTheme = (themeData) => async (dispatch) => {
+  dispatch(setDatFetchingStatus(false));
+  dispatch(setErrorMessage(undefined));
+
+  try {
+    dispatch(setDatFetchingStatus(true));
+
+    await axios.put(`/preference/theme/`, themeData, {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+      },
+    });
+    dispatch(setTheme(themeData.preferenceValue));
+    dispatch(setDatFetchingStatus(false));
+    dispatch(setErrorMessage(undefined));
+  } catch (error) {
+    dispatch(setDatFetchingStatus(false));
+    dispatch(setErrorMessage(error.response.data.message));
+  }
 };
 
 export const autoLogin = () => (dispatch) => {
@@ -61,7 +83,6 @@ export const loginRequest = (formData) => async (dispatch) => {
     dispatch(setDatFetchingStatus(true));
     const response = await axios.post("/login", formData);
     dispatch(setDatFetchingStatus(false));
-    console.log("res", response.data);
     window.sessionStorage.setItem("token", response.data.token);
     window.sessionStorage.setItem("email", response.data.email);
     window.sessionStorage.setItem("name", response.data.name);
@@ -74,8 +95,50 @@ export const loginRequest = (formData) => async (dispatch) => {
   }
 };
 
+export const registerRequest = (formData) => async (dispatch) => {
+  dispatch(setDatFetchingStatus(false));
+  dispatch(setErrorMessage(undefined));
+  dispatch(setIsRegister(false));
+  dispatch(setIsRegister(false));
+
+  try {
+    dispatch(setDatFetchingStatus(true));
+    await axios.post("/register", formData);
+    dispatch(setDatFetchingStatus(false));
+    dispatch(setErrorMessage(undefined));
+    dispatch(setIsRegister(true));
+  } catch (error) {
+    dispatch(setDatFetchingStatus(false));
+    dispatch(setErrorMessage(error.response.data.message));
+  }
+};
+
+export const fetchUserCurrentTheme = (userId) => async (dispatch) => {
+  dispatch(setDatFetchingStatus(false));
+  dispatch(setErrorMessage(undefined));
+  dispatch(setTheme(null));
+
+  try {
+    dispatch(setDatFetchingStatus(true));
+
+    const response = await axios.get(`/preference/theme/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+      },
+    });
+    dispatch(setTheme(response.data.preferenceValue));
+    dispatch(setDatFetchingStatus(false));
+    dispatch(setErrorMessage(undefined));
+  } catch (error) {
+    dispatch(setDatFetchingStatus(false));
+    dispatch(setTheme(null));
+    dispatch(setErrorMessage(error.response.data.message));
+  }
+};
+
 export const logoutRequest = () => async (dispatch) => {
   dispatch(setErrorMessage(undefined));
+  dispatch(setTheme(null));
   window.sessionStorage.removeItem("token");
   window.sessionStorage.removeItem("email");
   window.sessionStorage.removeItem("name");

@@ -11,22 +11,50 @@ import {
 } from "@mui/material/";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+
+import Backdrop from "components/ui/BackDrop";
+import { registerRequest } from "reduxSlices/themeSlice";
 
 const theme = createTheme();
 
 export default function SignUp() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [formData, setFormData] = React.useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+  });
+
+  const errorMessage = useSelector((state) => state.theme.errorMessage);
+  const isRegister = useSelector((state) => state.theme.isRegister);
+  const dataFetchingStatus = useSelector(
+    (state) => state.theme.dataFetchingStatus
+  );
+
+  React.useEffect(() => {
+    if (isRegister) {
+      navigate("/");
+    }
+  }, [isRegister, navigate]);
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    dispatch(registerRequest(formData));
+  };
+
+  const handleChange = (e) => {
+    const copyOfFormData = { ...formData };
+    copyOfFormData[e.target.name] = e.target.value;
+    setFormData(copyOfFormData);
   };
 
   return (
     <ThemeProvider theme={theme}>
+      <Backdrop open={dataFetchingStatus} />
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -59,6 +87,7 @@ export default function SignUp() {
                   id="firstName"
                   label="First Name"
                   autoFocus
+                  onChange={handleChange}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -69,6 +98,7 @@ export default function SignUp() {
                   label="Last Name"
                   name="lastName"
                   autoComplete="family-name"
+                  onChange={handleChange}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -79,6 +109,7 @@ export default function SignUp() {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
+                  onChange={handleChange}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -90,6 +121,7 @@ export default function SignUp() {
                   type="password"
                   id="password"
                   autoComplete="new-password"
+                  onChange={handleChange}
                 />
               </Grid>
             </Grid>
@@ -106,6 +138,11 @@ export default function SignUp() {
                 <Link to="/">Already have an account? Sign in</Link>
               </Grid>
             </Grid>
+            {errorMessage && (
+              <Typography component="div" color="red">
+                {errorMessage}
+              </Typography>
+            )}
           </Box>
         </Box>
       </Container>
