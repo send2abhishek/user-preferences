@@ -13,7 +13,6 @@ if (process.env.NODE_ENV !== "production") {
     .sync({})
     .then(() => {
       console.log(`All Tables synced!`);
-      //require("./seeds/");
     })
     .catch((err) => {
       console.log(err);

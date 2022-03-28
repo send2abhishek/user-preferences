@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const Preference = require("../models/preference");
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 const bcrypt = require("bcrypt");
@@ -45,6 +46,12 @@ async function findUserByEmail(email) {
       where: {
         email: email,
       },
+      include: [
+        {
+          model: Preference,
+          attributes: ["id", "preference_name", "preference_value"],
+        },
+      ],
     });
     return result;
   } catch (ex) {
@@ -79,6 +86,7 @@ const login = async (req, res, next) => {
           email: userResult.email,
           name: `${userResult.firstName} ${userResult.lastName}`,
           token: token,
+          preferences: userResult.preferences,
         });
       } else {
         res.status(401).json({
