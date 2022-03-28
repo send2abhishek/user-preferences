@@ -1,5 +1,5 @@
 let config = {
-  API_BASE_URL: "http://localhost:3001/api/",
+  API_BASE_URL: "https://node-preferences-api.herokuapp.com/api/",
 };
 
 export default config;
